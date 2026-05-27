@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div class="hero">
+        <h1>AI Resume Analyzer</h1>
+        <p>Upload your resume, add target role and job description, and get structured AI feedback.</p>
+    </div>
+
+    <form action="/analyze" method="POST" enctype="multipart/form-data" class="form-box">
+        <label>Upload Resume</label>
+        <input type="file" name="resume" accept=".pdf,.docx,.txt" required>
+
+        <label>Target Role</label>
+        <input type="text" name="role" placeholder="Frontend Developer">
+
+        <label>Job Description</label>
+        <textarea name="jobdesc" placeholder="Paste job description here..."></textarea>
+
+        <button type="submit">Analyze Resume</button>
+    </form>
+
+    {% if error %}
+    <div class="error-box">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div class="result-box">
+        <div class="score-grid">
+            <div class="score-card">
+                <h3>Overall Score</h3>
+                <div class="score">{{ result.overall_score }}/100</div>
+            </div>
+
+            <div class="score-card">
+                <h3>ATS Score</h3>
+                <div class="score">{{ result.ats_score }}/100</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Summary</h2>
+            <p>{{ result.summary }}</p>
+        </div>
+
+        <div class="section">
+            <h2>Rewrite Headline</h2>
+            <p>{{ result.rewrite_headline }}</p>
+        </div>
+
+        <div class="two-col">
+            <div class="panel">
+                <h2>Strengths</h2>
+                <ul>
+                    {% for item in result.strengths %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h2>Weaknesses</h2>
+                <ul>
+                    {% for item in result.weaknesses %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div class="panel">
+                <h2>Missing Keywords</h2>
+                <ul>
+                    {% for item in result.missing_keywords %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h2>Suggestions</h2>
+                <ul>
+                    {% for item in result.suggestions %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div class="panel">
+                <h2>Interview Talking Points</h2>
+                <ul>
+                    {% for item in result.interview_talking_points %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h2>Recommended Next Steps</h2>
+                <ul>
+                    {% for item in result.recommended_next_steps %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Raw JSON Response</h2>
+            <pre>{{ raw_json }}</pre>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
